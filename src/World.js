@@ -1,6 +1,6 @@
-// ColoredPoint.js (c) 2012 matsuda
-// Vertex shader program
-//Assignment grader notes: Most code based off of Professor's walkthrough videos. ChatGPT sometimes helped me debug, get unstuck with my code, and learn new stuff for my code. I made comments in my code indicating where it was used. Also recieved small help from course tutor.
+//Cyrus Amalan
+//camalan@ucsc.edu
+
 
 var VSHADER_SOURCE = `
   precision mediump float;
@@ -15,8 +15,6 @@ var VSHADER_SOURCE = `
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
   }`
-//where pointsize changes the size of the squares.
-
 
 // Fragment shader program
 var FSHADER_SOURCE = `
