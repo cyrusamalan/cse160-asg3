@@ -2,6 +2,8 @@
 //camalan@ucsc.edu
 /*Notes to Grader:
 I did have issues adding more obstacles as 5/10 of the times the fps would drop heavy and crash the website.*/ 
+
+
 var VSHADER_SOURCE = `
   precision mediump float;
   attribute vec4 a_Position;
@@ -147,7 +149,7 @@ function connectVariablesToGLSL(){
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
 
   gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityM.elements); 
-  gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements);   //If professor's guides make things dissapear, probably forgot to initialize something. 
+  gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements); 
 }
 
 
