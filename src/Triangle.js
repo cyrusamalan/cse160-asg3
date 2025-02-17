@@ -19,7 +19,6 @@ class Triangle{
   }
 }
 
-
 function drawTriangle(vertices) {
   
       var n = 3; 

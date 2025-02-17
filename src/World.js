@@ -1,7 +1,6 @@
 //Cyrus Amalan
 //camalan@ucsc.edu
 
-
 var VSHADER_SOURCE = `
   precision mediump float;
   attribute vec4 a_Position;
