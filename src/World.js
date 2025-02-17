@@ -196,21 +196,7 @@ function addActionForHTMLUI(){
     g_globalAngleY = this.value; 
     renderAllShapes(); 
   });
-  // Color Slider Events
-  //document.getElementById('yellowSlide').addEventListener('input', function() {g_yellowAngle = this.value; renderAllShapes();});
-
-  document.getElementById('yellowSlideRight').addEventListener('input', function() {g_yellowAngleRight = this.value; renderAllShapes();});
-
-
-  document.getElementById('left_foot_Slide').addEventListener('input', function() {g_left_footangle = this.value; renderAllShapes();});
-
-  //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this snippet of code
-  document.getElementById('midLegSlider').addEventListener('input', function() {
-    // Update the rotation angle of the mid left leg and the foot
-    g_midLegAngle = this.value;
-    // Render all shapes with updated rotation angle
-    renderAllShapes();
-});
+ 
 
 // Mouse control to rotate canvas(CHATGPT helped me with this):
 canvas.addEventListener('mousedown', function(ev) {
