@@ -1,6 +1,7 @@
 //Cyrus Amalan
 //camalan@ucsc.edu
-
+/*Notes to Grader:
+I did have issues adding more obstacles as 5/10 of the times the fps would drop heavy and crash the website.*/ 
 var VSHADER_SOURCE = `
   precision mediump float;
   attribute vec4 a_Position;
