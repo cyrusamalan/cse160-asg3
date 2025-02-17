@@ -200,21 +200,16 @@ function mouseMoveHandler(ev) {
   let X = ev.clientX - mouse_x;
   let Y = ev.clientY - mouse_y;
   
-  // Update rotation angles based on mouse movement
-  g_globalAngle += X * 1; // Sensitivity of 1 to make it fast
-  g_globalAngleY += Y * 1;
+  g_globalAngle += X * 0.3; 
+  g_globalAngleY += Y * 0.3;
   
-  // Store intermediate mouse position
   mouse_x = ev.clientX;
   mouse_y = ev.clientY;
   
-  // Render shapes with updated rotation angles
-  renderAllShapes(); //professor's code
+  renderAllShapes(); 
 }
 
-// Function to handle mouse up event (rotate canvas) (CHATGPT helped me with this):
 canvas.addEventListener('mouseup', function(ev) {
-  // Remove the mouse move event listener when mouse is released
   canvas.removeEventListener('mousemove', mouseMoveHandler);
 });
 }
@@ -233,12 +228,12 @@ function initTextures() {
     return false;
   }
 
-  image.onload = function(){ sendTextureToGLSL(image,0); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
+  image.onload = function(){ sendTextureToGLSL(image,0); };
   
   image.src = '../images/sky.jpg';
 
 
-  image2.onload = function(){ sendTextureToGLSL(image2,1); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
+  image2.onload = function(){ sendTextureToGLSL(image2,1); }; 
   
   image2.src = '../images/block.png';
 
@@ -299,7 +294,6 @@ function main() {
 var g_startTime=performance.now()/1000.0;
 var g_seconds=performance.now/1000.0-g_startTime;
 
-//Called by the broswer repeatedly whenever its time
 function tick(){
   // Save the current time
   g_seconds = performance.now()/120.0-g_startTime;
@@ -311,14 +305,12 @@ function tick(){
   // Draw everything
   renderAllShapes();
 
-  // Tell the browser to update again when it has time
   requestAnimationFrame(tick);
 }
 
 
 function click(ev) {
-  //Extract the event click and return it in WebGL coordinates
-  let [x, y] = convertCoordinatesEventToGL(ev); // grab the values of the click event and return it in WebGl coordinates.
+  let [x, y] = convertCoordinatesEventToGL(ev); // grab the values
   
   //Create and store the new point
   let point;
@@ -330,8 +322,7 @@ function click(ev) {
   }
   else if (g_selectedType==CIRCLE){
     point = new Circle();
-    // Set the segments property of the circle
-    point.segments = g_selectedSegment;  //chat gpt helped me come up with this line of code, I was stuck debugging part 11 but it helped me come up with this code.
+    point.segments = g_selectedSegment;
   }
 
   point.position=[x,y];
@@ -375,7 +366,6 @@ function keydown(ev) {
   } else if (ev.keyCode == 40) { // Down arrow key (Move down)
     g_eye[1] -= 0.2;
   }
-
   renderAllShapes();
   console.log("Key pressed:", ev.keyCode, "g_eye:", g_eye, "g_globalAngle:", g_globalAngle);
 }
@@ -397,18 +387,15 @@ function renderAllShapes(){
 
   // Pass the view matrix
   var viewMat=new Matrix4();
-  viewMat.setLookAt(g_eye[0], g_eye[1], g_eye[2], g_at[0], g_at[1], g_at[2], g_up[0], g_up[1], g_up[2]);  //(eye, at, up)
+  viewMat.setLookAt(g_eye[0], g_eye[1], g_eye[2], g_at[0], g_at[1], g_at[2], g_up[0], g_up[1], g_up[2]); 
   gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
-  //Pass the matrix to u_ModelMatrix attribute
   var globalRotMat=new Matrix4().rotate(g_globalAngle,0,1,0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  //Pass the matrix to u_ModelMatrix attribute (ChatGPT helped me create this y-axis slider part)
   var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0).rotate(g_globalAngleY, 1, 0, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  // Clear <canvas>  (rendering points)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
 
 // Draw the floor
@@ -456,7 +443,6 @@ function renderAllShapes(){
   fan.matrix.scale(0.25, 0.7, 0.5);
   fan.matrix.translate(-0.5, 0, 0);
   fan.render();
-
 
   //Creates two walls with the grass texture
   let startZ = -2;  // Initial Z position
