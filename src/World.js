@@ -169,15 +169,11 @@ let g_globalAngle = 0;
 let g_globalAngleY = 0;
 let g_yellowAngle = 0;
 let g_yellowAngleRight = 0;
-let g_magentaAngle = 0;
-let g_left_footangle = 0;
-let g_midLegAngle = 0;   //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this line of code
-let g_yellowAnimation=false;  //Always start without animation when starting up
+let g_yellowAnimation=false;
 let mouse_x = 0;
 let mouse_y = 0;
 let g_wattleAnimation = false;
 let g_wattleAnimationrock = 0;
-//let g_selectedSegment = 3;
 
 function addActionForHTMLUI(){
   //Button Events
@@ -190,12 +186,6 @@ function addActionForHTMLUI(){
     g_globalAngle = this.value; 
     renderAllShapes(); 
   });  //calls renderallshapes everytime the slider moves dynamically. Updates happen on the current state of the world.
-
-//Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this line of code
-  document.getElementById('angleSlideY').addEventListener('input', function() {
-    g_globalAngleY = this.value; 
-    renderAllShapes(); 
-  });
  
 
 // Mouse control to rotate canvas(CHATGPT helped me with this):
@@ -232,6 +222,7 @@ canvas.addEventListener('mouseup', function(ev) {
 function initTextures() {
   var image = new Image();   // Create a texture object
   var image2 = new Image();
+  var image3 = new Image();
   if (!image) {
     console.log('Failed to create the image object');
     return false;
@@ -251,13 +242,12 @@ function initTextures() {
   
   image2.src = '../images/block.png';
 
+  image3.onload = function(){sendTextureToGLSL(image3, 2)}
+
   return true;
 
-
-// Add more texture loading
 }
 
-//ChatGPT helped me fix some lines of code in this function to accomodate and also helped me learn how to handle 2 textures in a program.
 function sendTextureToGLSL(image, textureUnit) {
   var texture = gl.createTexture();
   if (!texture){
@@ -275,7 +265,6 @@ function sendTextureToGLSL(image, textureUnit) {
 
 
 
-//ChatGPT helped me learn in these if-else statements how to handle using two textures (and additional ones if needed)
   if (textureUnit == 0) {
     gl.uniform1i(u_Sampler0, textureUnit);
   } else if (textureUnit == 1) {
@@ -294,38 +283,19 @@ function main() {
 
   addActionForHTMLUI();
 
-  // Register function (event handler) to be called on a mouse press
   canvas.onmousedown = click;
-  canvas.onmousemove = function (ev) { if(ev.buttons == 1) {click(ev) } };  //drag and move mouse on canvas
+  canvas.onmousemove = function (ev) { if(ev.buttons == 1) {click(ev) } }; 
 
-  // Specify the color for clearing <canvas>
-  gl.clearColor(0, 0, 0, 1); //Chatgpt helped me calculate a good color for my background to allow the shadows to appear nicely (baby blue)
-
-  // Register function (event handler) to be called on a mouse press
-  //Code borrowed and learned from: https://people.ucsc.edu/~jrgu/asg2/blockyAnimal/BlockyAnimal.js
-  canvas.onclick = function(ev) {if(ev.shiftKey) {if (g_wattleAnimation){g_wattleAnimation = false} g_wattleAnimation = true}}
-  canvas.onmousedown = origin;
-  canvas.onmousemove = function(ev) { if(ev.buttons == 1) { click(ev) } };
-
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); //clears the color and the depths (Rohan the course tutor helped me with this line of code)
+  gl.clearColor(0, 0, 0, 1); 
 
   //renderAllShapes();
   requestAnimationFrame(tick);
 
-  //canvas.onmousemove = function(ev) {if(ev.buttons == 1)}
   document.onkeydown = keydown;
 
   initTextures();
 }
 
-//var g_shapesList = [];
-
-//  var g_points = [];  // The array for the position of a mouse press
-//  var g_colors = [1.0, 1.0, 1.0, 1.0];  // The array to store the color of a point
-//  var g_sizes = [];
-
-// Keep track of startime when program starts and the seconds
 var g_startTime=performance.now()/1000.0;
 var g_seconds=performance.now/1000.0-g_startTime;
 
@@ -370,29 +340,22 @@ function click(ev) {
   renderAllShapes();
 }
 
-function convertCoordinatesEventToGL(ev){
-  var x = ev.clientX; // x coordinate of a mouse pointer
-  var y = ev.clientY; // y coordinate of a mouse pointer
-  var rect = ev.target.getBoundingClientRect();
 
-  x = ((x - rect.left) - canvas.width/2)/(canvas.width/2);
-  y = (canvas.height/2 - (y - rect.top))/(canvas.height/2);
+function updateAnimationAngles(){ 
+  let spinSpeed = 10; // Adjust for slower or faster spinning
+  let slowSpin = (g_seconds * spinSpeed) % 360; // Continuous slow rotation
 
-  return([x,y]);
-  
-}
-
-function updateAnimationAngles(){ //put all of the different angles that we are going to move with the on/off button here
-  if (g_yellowAnimation){                             //g_yellowAnimation is currently being used to animate all of the objects
-    g_yellowAngle = (-34*Math.sin(g_seconds));        //ChatGPT helped me figure out the math for the angle rotations for the animations
+  if (g_yellowAnimation){                             
+    g_yellowAngle = slowSpin; // Spins continuously
   }
   if(g_yellowAnimation){
-    g_yellowAngleRight = (34*Math.sin(g_seconds));
+    g_yellowAngleRight = -slowSpin; // Opposite direction spin
   }
   if(g_wattleAnimation){
-    g_wattleAnimationrock = (-34 * Math.sin(g_seconds));
+    g_wattleAnimationrock = slowSpin; // Matches the other spins
   }
 }
+
 
 function keydown(ev) {
   if (ev.keyCode == 68) { // 'D' key (Move right)
@@ -418,13 +381,9 @@ function keydown(ev) {
 }
 
 
-
-
-
 var g_eye=[0,0,3];
 var g_at=[0,0,-100];
 var g_up=[0,1,0];
-
 
 
 function renderAllShapes(){
@@ -468,53 +427,56 @@ function renderAllShapes(){
   sky.matrix.scale(50,50,50);
   sky.matrix.translate(-0.5, -0.5, -0.5);
   sky.render();
-  
-  //Draw a cube (red one)
-  var body = new Cube();
-  body.color = [1.0, 0.0, 0.0, 1.0];
-  body.textureNum = -1;
-  body.matrix.translate(-0.25, -0.75, 0.0);
-  body.matrix.rotate(-5,1,0,0);
-  body.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
-  body.render();
-
-
-  //Draw a cube (red one)
-  var body2 = new Cube();
-  body2.color = [1.0, 0.0, 0.0, 1.0];
-  body2.textureNum = -1;
-  body2.matrix.translate(0.60, -0.75, 0.0);
-  body2.matrix.rotate(-5,1,0,0);
-  body2.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
-  body2.render();
 
 
   // Draw a yellow left arm
-  var leftArm = new Cube();
-  leftArm.color = [1,1,0,1];
-  leftArm.matrix.setTranslate(0,-0.5,0.0);
-  leftArm.matrix.rotate(-5, 1, 0, 0);
-  // leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);  //2.6: rotate the yellow joint
-  leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);  //2.6: rotate the yellow joint
-  var yellowCoordinatesMat = new Matrix4(leftArm.matrix);
-  leftArm.matrix.scale(0.25, 0.7, 0.5);
-  leftArm.matrix.translate(-0.5, 0, 0);
-  leftArm.render();
+  var fan = new Cube();
+  fan.color = [1,1,0,1];
+  fan.matrix.setTranslate(0,0.5,0.0);
+  fan.matrix.rotate(-g_yellowAngle, 0, 0, 1); 
+  fan.matrix.scale(0.25, 0.7, 0.5);
+  fan.matrix.translate(-0.5, 0, 0);
+  fan.render();
 
+  var fan = new Cube();
+  fan.color = [1,1,0,1];
+  fan.matrix.setTranslate(1,0.5,0.0);
+  fan.matrix.rotate(-g_yellowAngle, 0, 0, 1); 
+  fan.matrix.scale(0.25, 0.7, 0.5);
+  fan.matrix.translate(-0.5, 0, 0);
+  fan.render();
+
+  var fan = new Cube();
+  fan.color = [1,1,0,1];
+  fan.matrix.setTranslate(-1,0.5,0.0);
+  fan.matrix.rotate(-g_yellowAngle, 0, 0, 1); 
+  fan.matrix.scale(0.25, 0.7, 0.5);
+  fan.matrix.translate(-0.5, 0, 0);
+  fan.render();
 
 
   //Creates two walls with the grass texture
-
   let startZ = -2;  // Initial Z position
   let incrementZ = 0.31;  // Increment value
-  let numBlocks = 10;  // Number of blocks to create
+  let numBlocks = 15;  // Number of blocks to create
 
   for (let i = 0; i < numBlocks; i++) {
     let box = new Cube();
     box.color = [1, 0, 1, 1];
     box.textureNum = 1;
     box.matrix.translate(-2.5, -0.7, startZ + (i * incrementZ));  // Increment Z
-    box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+    box.matrix.rotate(0, 0, 0, 1);
+    box.matrix.scale(0.3, 0.3, 0.3);
+    box.matrix.translate(-0.5, 0, -0.001);
+    box.render();
+  }
+
+  for (let i = 0; i < numBlocks; i++) {
+    let box = new Cube();
+    box.color = [1, 0, 1, 1];
+    box.textureNum = 1;
+    box.matrix.translate(-2.5, -0.4, startZ + (i * incrementZ));  // Increment Z
+    box.matrix.rotate(0, 0, 0, 1);
     box.matrix.scale(0.3, 0.3, 0.3);
     box.matrix.translate(-0.5, 0, -0.001);
     box.render();
@@ -525,18 +487,23 @@ function renderAllShapes(){
     box.color = [1, 0, 1, 1];
     box.textureNum = 1;
     box.matrix.translate(3, -0.7, startZ + (i * incrementZ));  // Increment Z
-    box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+    box.matrix.rotate(0, 0, 0, 1);
     box.matrix.scale(0.3, 0.3, 0.3);
     box.matrix.translate(-0.5, 0, -0.001);
     box.render();
   }
 
+  for (let i = 0; i < numBlocks; i++) {
+    let box = new Cube();
+    box.color = [1, 0, 1, 1];
+    box.textureNum = 1;
+    box.matrix.translate(3, -0.4, startZ + (i * incrementZ));  // Increment Z
+    box.matrix.rotate(0, 0, 0, 1);
+    box.matrix.scale(0.3, 0.3, 0.3);
+    box.matrix.translate(-0.5, 0, -0.001);
+    box.render();
+  }
 
-  
-
-
-
-  //Check the time at the end of the function, and show on web page
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "numdot");
 }
