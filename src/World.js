@@ -432,7 +432,7 @@ function renderAllShapes(){
   // Draw a yellow left arm
   var fan = new Cube();
   fan.color = [1,1,0,1];
-  fan.matrix.setTranslate(0,0.5,0.0);
+  fan.matrix.setTranslate(0,0,0.0);
   fan.matrix.rotate(-g_yellowAngle, 0, 0, 1); 
   fan.matrix.scale(0.25, 0.7, 0.5);
   fan.matrix.translate(-0.5, 0, 0);
