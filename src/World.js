@@ -409,7 +409,7 @@ function updateAnimationAngles(){ //put all of the different angles that we are 
 }
 
 function keydown(ev) {
-  if(ev.keyCode == 68) { // 'D' key (Move right)
+  if (ev.keyCode == 68) { // 'D' key (Move right)
     g_eye[0] += 0.2;
   } else if (ev.keyCode == 65) { // 'A' key (Move left)
     g_eye[0] -= 0.2;
@@ -421,11 +421,16 @@ function keydown(ev) {
     g_globalAngle -= 5;
   } else if (ev.keyCode == 69) { // 'E' key (Rotate right)
     g_globalAngle += 5;
+  } else if (ev.keyCode == 38) { // Up arrow key (Move up)
+    g_eye[1] += 0.2;
+  } else if (ev.keyCode == 40) { // Down arrow key (Move down)
+    g_eye[1] -= 0.2;
   }
 
   renderAllShapes();
   console.log("Key pressed:", ev.keyCode, "g_eye:", g_eye, "g_globalAngle:", g_globalAngle);
 }
+
 
 
 
@@ -512,7 +517,7 @@ function renderAllShapes(){
 
 
 
- 
+  //Creates two walls with the grass texture
 
   let startZ = -2;  // Initial Z position
   let incrementZ = 0.31;  // Increment value
@@ -529,26 +534,16 @@ function renderAllShapes(){
     box.render();
   }
 
-  
-
-
-
-
-
-
-
-
-
-  // //Party hat!!
-  var hat = new Pyramid();
-  hat.color = [0.0, 1.0, 0.0, 1.0];
-  hat.textureNum = 1;
-  hat.matrix.translate(-0.55, -0.5, 1.0);
-  hat.matrix.scale(0.4, 0.4, 0.4);
-  hat.render();
-
-
-
+  for (let i = 0; i < numBlocks; i++) {
+    let box = new Cube();
+    box.color = [1, 0, 1, 1];
+    box.textureNum = 1;
+    box.matrix.translate(3, -0.7, startZ + (i * incrementZ));  // Increment Z
+    box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+    box.matrix.scale(0.3, 0.3, 0.3);
+    box.matrix.translate(-0.5, 0, -0.001);
+    box.render();
+  }
 
 
   
