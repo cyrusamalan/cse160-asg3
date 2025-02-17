@@ -39,10 +39,10 @@ var FSHADER_SOURCE = `
     else if (u_whichTexture == 1){
       gl_FragColor = texture2D(u_Sampler1, v_UV);
     }
-    else{                  //Error, put red
-      gl_FragColor = vec4(1, 0.2, 0.2, 1);
+    else{   
+      gl_FragColor = vec4(1, 0.2, 0.4, 1);
     }
-  }` // add a line saying that if I don't want to use a specific texture or not in fragment shader.
+  }`
 
 //Global Variables
 let canvas;
@@ -63,8 +63,6 @@ function setupWebGL(){
   // Retrieve <canvas> element
   canvas = document.getElementById('webgl');
 
-  // Get the rendering context for WebGL
-  //gl = getWebGLContext(canvas);
   gl = canvas.getContext("webgl", { preserveDrawingBuffer: true});
   if (!gl) {
     console.log('Failed to get the rendering context for WebGL');
@@ -180,21 +178,15 @@ function addActionForHTMLUI(){
   document.getElementById('animationYellowOffButton').onclick = function() {g_yellowAnimation=false;};
   document.getElementById('animationYellowOnButton').onclick = function() {g_yellowAnimation=true;};
 
-  //Size Slider Events (chat gpt helped me fix this function, for some reason the professor's code was 
-  // causing the program to draw when I simply just hovered my mouse over the slider, which I don't want)
   document.getElementById('angleSlide').addEventListener('input', function() {
     g_globalAngle = this.value; 
     renderAllShapes(); 
-  });  //calls renderallshapes everytime the slider moves dynamically. Updates happen on the current state of the world.
+  });  
  
-
-// Mouse control to rotate canvas(CHATGPT helped me with this):
 canvas.addEventListener('mousedown', function(ev) {
-  // Event listener for mouse move to handle rotation while dragging on canvas
   canvas.addEventListener('mousemove', mouseMoveHandler);
 });
 
-// handle mouse move for rotation of canvas(CHATGPT helped me with this):
 function mouseMoveHandler(ev) {
   // Calculate movement delta
   let X = ev.clientX - mouse_x;
