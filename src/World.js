@@ -249,7 +249,7 @@ function initTextures() {
 
   image2.onload = function(){ sendTextureToGLSL(image2,1); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
   
-  image2.src = '../images/grass.jpg';
+  image2.src = '../images/block.png';
 
   return true;
 
