@@ -220,7 +220,7 @@ function initTextures() {
 
   image.onload = function(){ sendTextureToGLSL(image,0); };
   
-  image.src = '../images/sky.jpg';
+  image.src = '../images/sky1.jpg';
 
 
   image2.onload = function(){ sendTextureToGLSL(image2,1); }; 
@@ -482,6 +482,8 @@ function renderAllShapes(){
     box.matrix.translate(-0.5, 0, -0.001);
     box.render();
   }
+
+
 
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "numdot");
